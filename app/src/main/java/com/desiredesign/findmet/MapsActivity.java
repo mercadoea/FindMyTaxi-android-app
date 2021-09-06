@@ -110,7 +110,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     String myLatitude = String.valueOf(location.getLatitude());
                     String myLongitude = String.valueOf(location.getLongitude());
-                    String etMsj = myLatitude + "," + myLongitude;
+                    String myTime = new java.text.SimpleDateFormat("yyyy/MM/dd,HH:mm:ss.SSS").format(location.getTime());
+                    String etMsj = myLatitude + "," + myLongitude + "," + myTime;
                     ubicacion.setText(etMsj);
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(latLng).title("Current location"));
@@ -143,7 +144,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             long MIN_TIME = 1000;
             long MIN_DIST = 5;
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DIST, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DIST, locationListener);
 
 
