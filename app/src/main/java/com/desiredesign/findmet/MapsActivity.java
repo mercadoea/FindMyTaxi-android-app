@@ -23,7 +23,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-    TextView ubicacion;
+    TextView lati;
+    TextView longi;
     ToggleButton toggle;
     private GoogleMap mMap;
     private LatLng latLng;
@@ -31,6 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Handler handler = new Handler();
     private final int delay = 5000;
     private boolean estado = false;
+    private String lat, lon, Time, mensaje;
 
 
     @Override
@@ -38,7 +40,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         com.desiredesign.findmet.databinding.ActivityMapsBinding binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ubicacion = findViewById(R.id.textView);
+        lati = findViewById(R.id.textView);
+        longi = findViewById(R.id.textView3);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -61,11 +64,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //The toggle is disabled
                 estado = false;
                 ejecutarTarea();
-
             }
         });
         
     }
+
+
 
 
 
@@ -74,11 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             public void run() {
 
-                int dstport = 49676;
 
-
-
-                udpClientThread = new UdpClientThread(dstport,ubicacion.getText().toString());
+                udpClientThread = new UdpClientThread(lat,lon,Time);
                 udpClientThread.start();
                 if(estado) {
                     handler.postDelayed(this, delay);
@@ -108,11 +109,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onLocationChanged(@NonNull Location location) {
                 try {
                     latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    String myLatitude = String.valueOf(location.getLatitude());
-                    String myLongitude = String.valueOf(location.getLongitude());
-                    String myTime = new java.text.SimpleDateFormat("yyyy/MM/dd,HH:mm:ss.SSS").format(location.getTime());
-                    String etMsj = myLatitude + "," + myLongitude + "," + myTime;
-                    ubicacion.setText(etMsj);
+                    lat = String.valueOf(location.getLatitude());
+                    lon = String.valueOf(location.getLongitude());
+                    Time = new java.text.SimpleDateFormat("yyyy/MM/dd,HH:mm:ss.SSS").format(location.getTime());
+                    lati.setText("Latitud: "+ lat);
+                    longi.setText("Longitud: " + lon);
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(latLng).title("Current location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -124,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
             }
+
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -138,13 +140,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onProviderEnabled(@NonNull String provider) {
 
+
             }
         };
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         try {
             long MIN_TIME = 1000;
-            long MIN_DIST = 5;
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DIST, locationListener);
+            long MIN_DIST = 0;
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME,MIN_DIST, locationListener);
 
 
         }

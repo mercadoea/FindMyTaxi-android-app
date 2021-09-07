@@ -14,10 +14,10 @@ public class UdpClientThread extends Thread{
     InetAddress address;
 
 
-    public UdpClientThread(int puerto_servidor, String toString) {
+    public UdpClientThread(String lat, String lon, String Time) {
         super();
-        dstPort = puerto_servidor;
-        ubicacion = toString;
+        dstPort = 49676;
+        ubicacion = lat+","+lon+","+Time;
 
     }
 
