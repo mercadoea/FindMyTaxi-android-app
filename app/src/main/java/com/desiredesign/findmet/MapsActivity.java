@@ -111,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     lat = String.valueOf(location.getLatitude());
                     lon = String.valueOf(location.getLongitude());
-                    Time = new java.text.SimpleDateFormat("yyyy/MM/dd,HH:mm:ss.SSS").format(location.getTime());
+                    Time = new java.text.SimpleDateFormat("yyyy-MM-dd,HH:mm:ss.SSS").format(location.getTime());
                     lati.setText("Latitud: "+ lat);
                     longi.setText("Longitud: " + lon);
                     mMap.clear();
