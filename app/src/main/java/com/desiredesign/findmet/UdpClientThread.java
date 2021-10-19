@@ -18,7 +18,7 @@ public class UdpClientThread extends Thread{
     public UdpClientThread(String lat, String lon, String Time, int taxi) {
         super();
         dstPort = 49676;
-        ubicacion = lat+","+lon+","+Time;
+        ubicacion = lat+","+lon+","+Time+","+taxi;
         this.taxi = taxi;
 
     }
