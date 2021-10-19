@@ -10,7 +10,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="479dp"
         android:layout_weight="1"
         tools:context=".MapsActivity" />
 
@@ -30,7 +30,29 @@
         android:text=""
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:id="@+id/radio_group">
+
+        <RadioButton
+            android:id="@+id/taxi_1"
+            android:layout_width="98dp"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="Taxi 1" />
+
+        <RadioButton
+            android:id="@+id/taxi_2"
+            android:layout_width="99dp"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="Taxi 2" />
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="wrap_content"

@@ -8,7 +8,12 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.view.View;
+import android.widget.RadioButton;
+import android.widget.Button;
+
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -26,12 +31,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView lati;
     TextView longi;
     ToggleButton toggle;
+    RadioButton taxi1, taxi2;
+
     private GoogleMap mMap;
     private LatLng latLng;
     UdpClientThread udpClientThread;
     Handler handler = new Handler();
     private final int delay = 5000;
     private boolean estado = false;
+    private boolean checked = false;
+    private int taxi;
     private String lat, lon, Time, mensaje;
 
 
@@ -42,6 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(binding.getRoot());
         lati = findViewById(R.id.textView);
         longi = findViewById(R.id.textView3);
+        taxi1 = findViewById(R.id.taxi_1);
+        taxi2 = findViewById(R.id.taxi_2);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -79,10 +90,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run() {
 
 
-                udpClientThread = new UdpClientThread(lat,lon,Time);
+                udpClientThread = new UdpClientThread(lat,lon,Time,taxi);
                 udpClientThread.start();
                 if(estado) {
-                    handler.postDelayed(this, delay);
+                    if(checked==true){
+                        handler.postDelayed(this, delay);
+                        Toast.makeText(getApplicationContext(), "Taxi= " + taxi, Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(),"Debe seleccionar un Taxi.", Toast.LENGTH_SHORT).show();
+                        toggle.setChecked(false);
+                        handler.getLooper();
+                    }
                 } else {
                     handler.getLooper();
                     //udpClientThread.interrupt();
@@ -97,7 +116,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        checked = ((RadioButton) view).isChecked();
+        String str ="";
+        // Check which radio button was clicked
 
+        switch(view.getId()) {
+            case R.id.taxi_1:
+                if (checked)
+                    taxi = 1;
+                    break;
+            case R.id.taxi_2:
+                if (checked)
+                    taxi = 2;
+                break;
+        }
+
+    }
 
 
 
@@ -111,9 +147,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     lat = String.valueOf(location.getLatitude());
                     lon = String.valueOf(location.getLongitude());
-                    Time = new java.text.SimpleDateFormat("yyyy-MM-dd,HH:mm:ss.SSS").format(location.getTime());
-                    lati.setText("Latitud: "+ lat);
-                    longi.setText("Longitud: " + lon);
+                    Time = new java.text.SimpleDateFormat("yyyy/MM/dd,HH:mm:ss.SSS").format(location.getTime());
+                    String latit = "Latitud: "+ lat;
+                    String longit = "Longitud: " + lon;
+                    lati.setText(latit);
+                    longi.setText(longit);
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(latLng).title("Current location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -125,7 +163,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
             }
-
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
